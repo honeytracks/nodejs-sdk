@@ -1,0 +1,48 @@
+{
+  "author": {
+    "name": "Ever Adventure Ltd",
+    "email": "gregory@everadventure.com",
+    "url": "https://github.com/coolblade"
+  },
+  "name": "honeytracks",
+  "description": "HoneyTracks Game Analytics Tracking Client for Node.JS",
+  "keywords": [
+    "honeytracks",
+    "analytics",
+    "game analytics"
+  ],
+  "version": "0.1.3",
+  "homepage": "https://github.com/coolblade/honeytracks-node-sdk",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/coolblade/honeytracks-node-sdk.git"
+  },
+  "engines": {
+    "node": ">=0.6.9"
+  },
+  "dependencies": {
+    "request": "2.9.x",
+    "crypto": "0.0.3",
+    "guid": "0.0.10"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "main": "./honeytracks.js",
+  "scripts": {},
+  "_id": "honeytracks@0.1.3",
+  "_from": "honeytracks@*",
+  "readme": "# NodeJS Library for HoneyTracks\n\nUsing the tracking needs a valid account at https://panel.honeytracks.com and the corresponding product ApiKey and SecretKey\n\n**Author:** [coolblade](http://www.github.com/coolblade)\n\n**License:** Apache v2\n\n# Installing HoneyTracks\n\n```\nnpm install honeytracks\n```\n\n### require\n```javascript\nvar HoneyTracks = require('honeytracks');\n```\n\n### Setup your honeytracks configuration\n```javascript\nHoneyTracks.setup({\n    ApiKey: 'YOUR_API_KEY',\n    Language: 'en_GB',\n    Space: 'default',\n    SecretKey: 'YOUR_SECRET_KEY'\n};\n```\n\nFor a full list of setup options please see the honeytracks docs at docs.honeytracks.com\n\n### Initialize honeytracks into your app life cycle\n```javascript\napp.use(HoneyTracks.initialize(true));\n```\n\nSetting the first param to true enables cookie support to have module handle UniqueCustomerClickToken. In this case be sure to position the HoneyTracks initialize middleware after the CookieParser middleware. If you wish to handle the UniqueCustomerClickToken yourself you can set this to false and in TrackClick pass in your own UniqueCustomerClickToken in the optional data parameter. Also note that UniqueCustomerIdentifier is not necessary for the TrackClick event, this is useful for new users where the user account id is not yet known/created.\n\n# API\n\n#### trackClick\n__https://docs.honeytracks.com/wiki/TrackClick/PHP__  \nTracks a user click and sets a cookie named as HTCTR to track only unique clicks. This method is used for tracking user clicks on ads and will be combined with marketing configured marketing costs.\n```\nreq.honeyTracks.trackClick('ad1', 'page1', function(success){console.log('success': success)})\n```\n\n#### trackFeatureUsage\n__https://docs.honeytracks.com/wiki/TrackFeatureUsage/PHP__  \nTracks the usage of a single game feature, e.g. make a game, fight a battle, start a construction, skill your character, etc.\n```\nreq.honeyTracks.trackFeatureUsage('Fight', 'PvP', null, {'Gold': 15}, 1, function(success){console.log('success': success)});\n```\n\n#### trackLevelup\n__https://docs.honeytracks.com/wiki/TrackLevelup/PHP__  \nTracks the level up of an user. If your game has no user levels you can use any other metric / value, which tracks the progression of a user. Being able to analyze in-game data by levels or the progression of users is very important for analytics purposes. Among other things this will allow you to optimize game-design for longer user retention. A possible solution for a soccer game could be the league of the user, for strategic build and raid games could be the number of bases/planets or tech tree activations.\n```\nreq.honeyTracks.trackLevelup(6, function(success){console.log('success': success)});\n```\n\n#### trackLogin\n__https://docs.honeytracks.com/wiki/TrackLogin/PHP__  \nTracks the user login.\n```\nreq.honeyTracks.trackLogin(function(success){console.log('success': success)});\n```\n\n#### trackLogout\n__https://docs.honeytracks.com/wiki/TrackLogout/PHP__  \nTracks the user logout\n```\nreq.honeyTracks.trackLogout(function(success){console.log('success': success)});\n```\n\n#### trackSignup\n__https://docs.honeytracks.com/wiki/TrackSignup/PHP__  \nTracks the user signup, if available with the corresponding marketing identifier token.\n```\nreq.honeyTracks.trackSignup('ad1', 'page1', {'UniqueCustomerClickToken': '3askj32jn3laskjdj2ijdlakdaikwokjsm2342'}, function(success){console.log('success': success)})\n```\n\n#### trackUserBirthyear\n__https://docs.honeytracks.com/wiki/TrackUserBirthyear/PHP__  \nTracks the user birthyear if known.\n```\nreq.honeyTracks.trackUserBirthyear(1980, function(success){console.log('success': success)})\n```\n\n#### trackUserGender\n__https://docs.honeytracks.com/wiki/TrackUserGender/PHP__  \nTracks the user gender if known.\n```\nreq.honeyTracks.trackUserGender('female', function(success){console.log('success': success)});\n```\n\n#### trackUserCustomStaticClassification\n__https://docs.honeytracks.com/wiki/TrackUserCustomStaticClassification/PHP__  \nTracks a custom classification of the user, e.g. useful for A/B-testing purposes. An user can have only one classification at the same time, keep in mind that the classification is only changed for today and the future and not for the past.\n```\nreq.honeyTracks.trackUserCustomStaticClassification('feature set b', function(success){console.log('success': success)});\n```\n\n#### trackViralityInvitation\n__https://docs.honeytracks.com/wiki/TrackViralityInvitation/PHP__  \nTracks an invitation sent by a user. To analyze the success of different invitation types and messages the invitation type and a unique message token are neccessary. Invitation types itself defines for example a neighborhood invitation or gifting. Your application has to ensure that the target link of an invitation contains the InviteType, InviteMessageToken and the unique customer identifier token to get valid analyses of success rates grouped by levels and marketing cohorts.\n```\nreq.honeyTracks.trackViralityInvitation('Neighbourhood', 'NH_INVITATION_MSG_1', 1, function(success){console.log('success': success)});\n```\n\n#### trackViralityInviteAcceptance\n__https://docs.honeytracks.com/wiki/TrackViralityInviteAcceptance/PHP__  \nTracks the acceptance of an invitation. Your application has to ensure that the InvitationType, the InviteMessageToken and the unique customer identifier token is available after a user accepts an invitation, e.g. you have to ensure that your links which the users clicks has all the necessary. This method should be called after a signup if the corresponding invitation information are available within the first request to your landing.\n```\nreq.honeyTracks.trackViralityInviteAcceptance ('Neighbourhood', 'NH_INVITATION_MSG_1', 'User1', function(success){console.log('success': success)});\n```\n\n#### trackVirtualCurrencyPurchase\n__https://docs.honeytracks.com/wiki/TrackVirtualCurrencyPurchase/PHP__  \nTracks a purchase of virtual currency.\n```\nreq.honeyTracks.trackVirtualCurrencyPurchase(55.0, 'CreditCard', 1.99, 'EUR', 1.438, 'EUR', false, function(success){console.log('success': success)});\nreq.honeyTracks.trackVirtualCurrencyPurchase({'Name': 'Emeralds', 'Amount': 55.0}, 'CreditCard', 1.99, 'EUR', 1.438, 'EUR', false, function(success){console.log('success': success)});\n```\n\n#### trackVirtualGoodsFeaturePurchase\n__https://docs.honeytracks.com/wiki/TrackVirtualGoodsFeaturePurchase/PHP__  \nTracks a purchase of a virtual goods feature, e.g. reset a block time for the next fight, finish a construction without waiting, etc..\n```\nreq.honeyTracks.trackVirtualGoodsFeaturePurchase('SpecialFight', 'PvP', 50, null, 1, false, function(success){console.log('success': success)});\nreq.honeyTracks.trackVirtualGoodsFeaturePurchase('SpecialFight', 'PvP', {'Name': 'Emeralds', 'Amount': 50}, null, 1, false, function(success){console.log('success': success)});\n```\n\n#### trackVirtualGoodsItemPurchase\n__https://docs.honeytracks.com/wiki/TrackVirtualGoodsItemPurchase/PHP__  \nTracks the purchase of an item, e.g. a sword, a pant or something like that, but this is not limited to these kind of items.\n```\nreq.honeyTracks.trackVirtualGoodsItemPurchase('sword', {'UniqueId': 'SWORD_TYPE_01','Name': 'Sword of might', 'ImageUrl': 'http://path.to/item/image.png'}, 225, null, 1, false, function(success){console.log('success': success)});\nreq.honeyTracks.trackVirtualGoodsItemPurchase('sword',\n  {\n    'UniqueId': 'SWORD_TYPE_01',\n    'Name': 'Sword of might',\n    'ImageUrl': 'http://path.to/item/image.png'\n  },\n  {'Name': 'Emeralds', 'Amount': 225},\n  null, // game currency currently not available\n  1,\n  false,\n  function(success){console.log('success': success)}\n);\n```\n\n#### trackVirtualCurrencyChargeback\n__https://docs.honeytracks.com/wiki/TrackVirtualCurrencyChargeback/PHP__  \nTracks a chargeback of a virtual currency purchase, e.g. if a credit card transaction failed. The revenue and payout amounts have to be always positive.\n```\nreq.honeyTracks.trackVirtualCurrencyChargeback( \n  55.0, 'CreditCard', 1.99, 'EUR', 1.438, 'EUR', false, function(success){console.log('success': success)}\n);\nreq.honeyTracks.trackVirtualCurrencyChargeback( \n  {'Name': 'Emeralds', 'Amount': 55.0}, 'CreditCard', 1.99, 'EUR', 1.438, 'EUR', false, function(success){console.log('success': success)}\n);\n```\n\n",
+  "dist": {
+    "shasum": "aa11048683104ad420e22c5eac9f02c549fc6873",
+    "tarball": "http://registry.npmjs.org/honeytracks/-/honeytracks-0.1.3.tgz"
+  },
+  "maintainers": [
+    {
+      "name": "coolblade",
+      "email": "gregory.james.ray@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_shasum": "aa11048683104ad420e22c5eac9f02c549fc6873",
+  "_resolved": "https://registry.npmjs.org/honeytracks/-/honeytracks-0.1.3.tgz"
+}
